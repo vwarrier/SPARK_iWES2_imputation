@@ -3,7 +3,7 @@ Pre-imputation has been done using the following Steps:
 
 ##Step 1: Delineate to European ancestry##
 
-```{R}
+```R
 setwd("/mnt/b2/home4/arc/vw260/SPARK/SPARK_v3/")
 
 ancestry = fread("SPARK.iWES_v2.ancestry.2023_01.tsv") #106781
@@ -16,7 +16,7 @@ fam2 = fam[fam$V2 %in% EUR$spid,] ##51869 genotyping ###26046 genotypebysequenci
 
 write.table(fam2[,c("V1", "V2")], file = "EUR_keep_sequencing.txt", row.names = F, col.names = F, quote = F)
 
-````
+```
 
 
 ##Step 2: Pre-imputation quality control##
