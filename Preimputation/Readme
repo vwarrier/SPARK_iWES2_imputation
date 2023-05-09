@@ -1,9 +1,8 @@
-Pre-imputation has been done using the following Steps:
+# Pre-imputation
 
+## Step 1: Delineate to European ancestry
 
-##Step 1: Delineate to European ancestry##
-
-```R
+```{R}
 setwd("/mnt/b2/home4/arc/vw260/SPARK/SPARK_v3/")
 
 ancestry = fread("SPARK.iWES_v2.ancestry.2023_01.tsv") #106781
@@ -19,7 +18,7 @@ write.table(fam2[,c("V1", "V2")], file = "EUR_keep_sequencing.txt", row.names = 
 ```
 
 
-##Step 2: Pre-imputation quality control##
+## Step 2: Pre-imputation quality control
 
 ```{bash}
 ./plink --bfile SPARK.iWES_v2.genotyping_by_sequencing --keep EUR_keep_sequencing.txt --make-bed --geno 0.05 --out ~/SPARK/SPARK_v3/Preimputation_sequencing/QC1output --threads 15
@@ -57,7 +56,7 @@ n
 ```
 
 
-###Step 3: Update for imputation###
+## Step 3: Update for imputation 
 
 ```{R}
 library(data.table)
@@ -82,9 +81,9 @@ perl HRC-1000G-check-bim.pl -b  ~/SPARK/SPARK_v3/Preimputation_genotype/QC6outpu
 rm ~/SPARK/SPARK_v3/Preimputation_genotype/TEMP*
 ```
 
-###Step 4: Split into ubgroups and convert files for imputation
+## Step 4: Split into ubgroups and convert files for imputation
 
-##In R to split it into two subsets because TOPMED accepts only 25K max
+In R to split it into two subsets because TOPMED accepts only 25K max
 
 ```{R}
 fam1 = fread("~/SPARK/SPARK_v3/Preimputation_genotype/QC6output-updated.fam")
