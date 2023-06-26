@@ -1,0 +1,21 @@
+###Generating pseudocontrol###
+
+##Step 1, update bed files
+
+## in R##
+
+fam_genotype = fread("~/SPARK/SPARK_v3/SPARK.iWES_v2.genotyping_array.fam")
+fam_genotype2 = fread("~/SPARK/SPARK_v3/Postimputation_genotyping/omega/alpha_omega_hg19_allchrs.fam")
+
+fam_genotype = fam_genotype[fam_genotype$V2 %in% fam_genotype2$V2,] # restrict it to participants who passed QC and are in imputed files
+write.table(fam_genotype[,1:4], row.names = F, col.names = T, quote = F, file = "~/SPARK/SPARK_v3/Postimputation_genotyping/omega/updatefamIDs.txt")
+write.table(fam_genotype[,c("V1", "V2", "V5")], row.names = F, col.names = T, quote = F, file = "~/SPARK/SPARK_v3/Postimputation_genotyping/omega/updatesex.txt")
+
+
+###Plink commands, in bash###
+
+./plink --bfile ~/SPARK/SPARK_v3/Postimputation_genotyping/omega/alpha_omega_hg19_allchrs --update-parents ~/SPARK/SPARK_v3/Postimputation_genotyping/omega/updatefamIDs.txt --make-bed --out ~/SPARK/SPARK_v3/Postimputation_genotyping/omega/alpha_omega_hg19_allchrs_parentupdate
+./plink --bfile ~/SPARK/SPARK_v3/Postimputation_genotyping/omega/alpha_omega_hg19_allchrs_parentupdate --update-sex ~/SPARK/SPARK_v3/Postimputation_genotyping/omega/updatesex.txt --make-bed --out ~/SPARK/SPARK_v3/Postimputation_genotyping/omega/alpha_omega_hg19_allchrs_parentsexupdate
+
+##Step 2, generate pseudocontrols
+./plink --bfile ~/SPARK/SPARK_v3/Postimputation_genotyping/omega/alpha_omega_hg19_allchrs_parentsexupdate --tucc write-bed --out ~/SPARK/SPARK_v3/Postimputation_genotyping/omega/alpha_omega_hg19_allchrs_parentupdate_pseudocons
