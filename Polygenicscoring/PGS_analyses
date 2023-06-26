@@ -1,0 +1,80 @@
+###PGS analyses###
+# We investigate both PGS overtransmission as well as case-sibling differences.
+
+#Step 1: PGS trio overtransmission
+library(data.table)
+library(lme4)
+prs_autism = fread("~/Autism_heterogeneity/PGS/SPARKv3_alphaomega_Autism_finalscore.profile", header = TRUE)
+setnames(prs_autism, "SCORE", "autism_prs")
+merged = prs_autism[,c("IID", "autism_prs", "FID")]
+merged = unique(merged)
+
+registration = fread("/mnt/beegfs/home4/arc/vw260/SPARK/Phenotypes/V9/SPARK_collection_v9_2022-12-12/core_descriptive_variables_2022-12-12.csv")
+
+trios =  registration[!(registration$biofather_id =="" | registration$biomother_id==""), ] # 65143
+asd_trios = subset(trios, asd == "TRUE") #44236
+
+
+merged_pgs_trio = merge(merged, asd_trios, by.x = "IID", by.y = "subject_sp_id") #11763, 3638
+
+merged_pgs_trio = merged_pgs_trio[merged_pgs_trio$biomother_id %in% merged$IID,] #8312, 2980
+merged_pgs_trio = merged_pgs_trio[merged_pgs_trio$biofather_id %in% merged$IID,] #6956, 2477
+
+
+fatherpgs = merged[merged$IID %in% asd_trios$biofather_id,] # 7763
+fatherpgs = fatherpgs[,c("IID", "FID", "autism_prs")]
+motherpgs = merged[merged$IID %in% asd_trios$biomother_id,] # 8430
+motherpgs = motherpgs[,c("IID", "FID","autism_prs")]
+
+casespgs = merged_pgs_trio #6956, 2477
+
+
+parentpgs = merge(motherpgs, fatherpgs, by = "FID") #6473
+parentpgs$midparent_autism = (parentpgs$autism_prs.x + parentpgs$autism_prs.y)/2
+
+triopgs = merge(parentpgs, casespgs, by = "FID") # 6981
+triopgs = triopgs[!duplicated(triopgs[,c("IID")]),] # 6513 (alpha_omega), 2477 (theta_tau), total = 6513 + 2477 = 8,990
+
+
+Sd_autism = sd(triopgs$midparent_autism) 
+
+triopgs$autism_diff = (triopgs$autism_prs - triopgs$midparent_autism)/Sd_autism
+
+mean(triopgs$autism_diff)
+sd(triopgs$autism_diff)
+N = sqrt(nrow(triopgs))
+Z = mean(triopgs$autism_diff)/(sd(triopgs$autism_diff)/N)
+mean(triopgs$autism_diff)
+(sd(triopgs$autism_diff)/N)
+2*pnorm(-abs(Z))
+
+
+## Sensitivity analyses: subset to no_ID
+noID = subset(triopgs, reported_cog_test_score == "110 - 119" | reported_cog_test_score == "120 - 129" | reported_cog_test_score == "130 - above" | reported_cog_test_score == "70 - 79" | reported_cog_test_score == "80 - 89"  | reported_cog_test_score == "90 - 109")
+
+N = sqrt(nrow(noID))
+Z = mean(noID$autism_diff)/(sd(noID$autism_diff)/N)
+mean(noID$autism_diff)
+(sd(noID$autism_diff)/N)
+2*pnorm(-abs(Z))
+
+
+## Step 2: Case-sibling analyses
+siblings = fread("~/SPARK/Phenotypes/V9/SPARK_collection_v9_2022-12-12/background_history_sibling_2022-12-12.csv")
+cases = fread("~/SPARK/Phenotypes/V9/SPARK_collection_v9_2022-12-12/background_history_child_2022-12-12.csv")
+sibling1 = siblings[,c("subject_sp_id", "family_sf_id", "sex", "asd", "age_at_eval_years")]
+cases1 = cases[,c("subject_sp_id", "family_sf_id", "sex", "asd", "age_at_eval_years")]
+merged = rbind(sibling1, cases1)
+setnames(merged, "subject_sp_id", "IID")
+
+prs_autism = fread("~/Autism_heterogeneity/PGS/SPARK_alphaomega_depression_finalscore.profile", header = TRUE)
+setnames(prs_autism, "SCORE", "prs")
+merged2 = merge(merged, prs_autism, by = "IID")
+
+PCs = fread("~/SPARK/SPARK_v3/Preimputation_genotype/SPARKalphaomega_PCsforGWAS.txt")
+setnames(PCs, "Sample_name", "IID")
+merged2 = merge(merged2, PCs, by = "IID")
+
+summary(lm(scale(prs) ~  asd + sex + age_at_eval_years +  X1 + X2 + X3 + X4 + X5 + X6 + X7 + X8 + X9 + X10, data = merged2)) # Family not as random effects.
+summary(lmer(scale(prs) ~  asd + sex + age_at_eval_years + (1|FID) + X1 + X2 + X3 + X4 + X5 + X6 + X7 + X8 + X9 + X10, data = merged2)) # Family as random effects.
+
