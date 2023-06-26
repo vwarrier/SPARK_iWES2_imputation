@@ -1,0 +1,45 @@
+##All commands in bash, we generate PGS using PRScs and SBayesRc###
+
+#Step 1: PRScs generate sumstats
+
+##SPARK_v2
+python PRScs.py --ref_dir=./ldblk_1kg_eur --bim_prefix=/mnt/b2/home4/arc/vw260/SPARK/SPARK_v3/Postimputation_genotyping/omega/alpha_omega_hg19_allchrs --sst_file=/mnt/b2/home4/arc/vw260/Autism_heterogeneity/PGC_SCZ3.txt --n_gwas=161405 --out_dir=/mnt/b2/home4/arc/vw260/Autism_heterogeneity/temp_pgs_files/SPARK_v3_scz  --phi=1e-2
+python PRScs.py --ref_dir=./ldblk_1kg_eur --bim_prefix=/mnt/b2/home4/arc/vw260/SPARK/SPARK_v3/Postimputation_genotyping/omega/alpha_omega_hg19_allchrs --sst_file=/mnt/b2/home4/arc/vw260/Autism_heterogeneity/Lee_edu.txt --n_gwas=766341 --out_dir=/mnt/b2/home4/arc/vw260/Autism_heterogeneity/temp_pgs_files/SPARK_v3_edu  --phi=1e-2 
+python PRScs.py --ref_dir=./ldblk_1kg_eur --bim_prefix=/mnt/b2/home4/arc/vw260/SPARK/SPARK_v3/Postimputation_genotyping/omega/alpha_omega_hg19_allchrs --sst_file=/mnt/b2/home4/arc/vw260/Autism_heterogeneity/Savage_cognition.txt --n_gwas=269867 --out_dir=/mnt/b2/home4/arc/vw260/Autism_heterogeneity/temp_pgs_files/SPARK_v3_IQ  --phi=1e-2 
+python PRScs.py --ref_dir=./ldblk_1kg_eur --bim_prefix=/mnt/b2/home4/arc/vw260/SPARK/SPARK_v3/Postimputation_genotyping/omega/alpha_omega_hg19_allchrs --sst_file=/mnt/b2/home4/arc/vw260/Autism_heterogeneity/autism_grove_ipsychonly2020.txt --n_gwas=58948 --out_dir=/mnt/b2/home4/arc/vw260/Autism_heterogeneity/temp_pgs_files/SPARK_v3_autism  --phi=1e-2
+
+python PRScs.py --ref_dir=./ldblk_1kg_eur --bim_prefix=/mnt/b2/home4/arc/vw260/SPARK/SPARK_v3/Postimputation_genotyping/omega/alpha_omega_hg19_allchrs --sst_file=/mnt/b2/home4/arc/vw260/Autism_heterogeneity/PGS_sumstats/ADHD2022_iPSYCH_PRSice.txt --n_gwas=225543 --out_dir=/mnt/b2/home4/arc/vw260/Autism_heterogeneity/temp_pgs_files/SPARK_alphaomega_ADHD  --phi=1e-2 
+python PRScs.py --ref_dir=./ldblk_1kg_eur --bim_prefix=/mnt/b2/home4/arc/vw260/SPARK/SPARK_v3/Postimputation_genotyping/omega/alpha_omega_hg19_allchrs --sst_file=/mnt/b2/home4/arc/vw260/Autism_heterogeneity/PGS_sumstats/Bipolar_Mullins_PRSice.txt --n_gwas=413446 --out_dir=/mnt/b2/home4/arc/vw260/Autism_heterogeneity/temp_pgs_files/SPARK_alphaomega_Bipolar  --phi=1e-2 
+python PRScs.py --ref_dir=./ldblk_1kg_eur --bim_prefix=/mnt/b2/home4/arc/vw260/SPARK/SPARK_v3/Postimputation_genotyping/omega/alpha_omega_hg19_allchrs --sst_file=/mnt/b2/home4/arc/vw260/Autism_heterogeneity/PGS_sumstats/depression_Howard_PRSice.txt --n_gwas=500199 --out_dir=/mnt/b2/home4/arc/vw260/Autism_heterogeneity/temp_pgs_files/SPARK_alphaomega_depression  --phi=1e-2 
+
+
+#Step 2: PRScs generate scores
+
+./plink --bfile /mnt/b2/home4/arc/vw260/SPARK/SPARK_v3/Postimputation_genotyping/omega/alpha_omega_hg19_allchrs --out ./PGS/SPARKv3_alphaomega_autism_finalscore --score ./final_data_forPGS/autism_SPARK_score.txt 2 4 6 center
+./plink --bfile /mnt/b2/home4/arc/vw260/SPARK/SPARK_v3/Postimputation_genotyping/omega/alpha_omega_hg19_allchrs --out ./PGS/SPARKv3_alphaomega_scz_finalscore --score ./final_data_forPGS/scz_spark_score.txt 2 4 6 center
+./plink --bfile /mnt/b2/home4/arc/vw260/SPARK/SPARK_v3/Postimputation_genotyping/omega/alpha_omega_hg19_allchrs --out ./PGS/SPARKv3_alphaomega_edu_finalscore --score ./final_data_forPGS/edu_SPARK_score.txt 2 4 6 center
+./plink --bfile /mnt/b2/home4/arc/vw260/SPARK/SPARK_v3/Postimputation_genotyping/omega/alpha_omega_hg19_allchrs --out ./PGS/SPARKv3_alphaomega_IQ_finalscore --score ./final_data_forPGS/IQ_SPARK_score.txt 2 4 6 center
+./plink --bfile /mnt/b2/home4/arc/vw260/SPARK/SPARK_v3/Postimputation_genotyping/omega/alpha_omega_hg19_allchrs --out ./PGS/SPARKv3_alphaomega_insomnia_finalscore --score ./final_data_forPGS/INSOMNIA_score.txt 2 4 6 center
+./plink --bfile /mnt/b2/home4/arc/vw260/SPARK/SPARK_v3/Postimputation_genotyping/omega/alpha_omega_hg19_allchrs --out ./PGS/SPARKv3_alphaomega_neuroticism_finalscore --score ./final_data_forPGS/NEUROTICISM_score.txt 2 4 6 center
+./plink --bfile /mnt/b2/home4/arc/vw260/SPARK/SPARK_v3/Postimputation_genotyping/omega/alpha_omega_hg19_allchrs --out ./PGS/SPARKv3_alphaomega_bipolar_finalscore --score ./final_data_forPGS/SPARK_alphaomega_bipolar_score.txt 2 4 6 center
+./plink --bfile /mnt/b2/home4/arc/vw260/SPARK/SPARK_v3/Postimputation_genotyping/omega/alpha_omega_hg19_allchrs --out ./PGS/SPARKv3_alphaomega_ADHD_finalscore --score ./final_data_forPGS/SPARK_alphaomega_ADHD_score.txt 2 4 6 center
+./plink --bfile /mnt/b2/home4/arc/vw260/SPARK/SPARK_v3/Postimputation_genotyping/omega/alpha_omega_hg19_allchrs --out ./PGS/SPARK_alphaomega_depression_finalscore --score ./final_data_forPGS/SPARK_alphaomega_depression_score.txt 2 4 6 center
+
+
+./plink --bfile /mnt/b2/home4/arc/vw260/SPARK/SPARK_v3/Postimputation_genotyping/theta/theta_tau_hg19_allchrs --out ./PGS/SPARKv3_thetatau_autism_finalscore --score ./final_data_forPGS/autism_SPARK_score.txt 2 4 6 center
+./plink --bfile /mnt/b2/home4/arc/vw260/SPARK/SPARK_v3/Postimputation_genotyping/theta/theta_tau_hg19_allchrs --out ./PGS/SPARKv3_thetatau_scz_finalscore --score ./final_data_forPGS/scz_spark_score.txt 2 4 6 center
+./plink --bfile /mnt/b2/home4/arc/vw260/SPARK/SPARK_v3/Postimputation_genotyping/theta/theta_tau_hg19_allchrs --out ./PGS/SPARKv3_thetatau_edu_finalscore --score ./final_data_forPGS/edu_SPARK_score.txt 2 4 6 center
+./plink --bfile /mnt/b2/home4/arc/vw260/SPARK/SPARK_v3/Postimputation_genotyping/theta/theta_tau_hg19_allchrs --out ./PGS/SPARKv3_thetatau_IQ_finalscore --score ./final_data_forPGS/IQ_SPARK_score.txt 2 4 6 center
+./plink --bfile /mnt/b2/home4/arc/vw260/SPARK/SPARK_v3/Postimputation_genotyping/theta/theta_tau_hg19_allchrs --out ./PGS/SPARKv3_thetatau_insomnia_finalscore --score ./final_data_forPGS/INSOMNIA_score.txt 2 4 6 center
+./plink --bfile /mnt/b2/home4/arc/vw260/SPARK/SPARK_v3/Postimputation_genotyping/theta/theta_tau_hg19_allchrs --out ./PGS/SPARKv3_thetatau_neuroticism_finalscore --score ./final_data_forPGS/NEUROTICISM_score.txt 2 4 6 center
+./plink --bfile /mnt/b2/home4/arc/vw260/SPARK/SPARK_v3/Postimputation_genotyping/theta/theta_tau_hg19_allchrs --out ./PGS/SPARKv3_thetatau_bipolar_finalscore --score ./final_data_forPGS/SPARK_alphaomega_bipolar_score.txt 2 4 6 center
+./plink --bfile /mnt/b2/home4/arc/vw260/SPARK/SPARK_v3/Postimputation_genotyping/theta/theta_tau_hg19_allchrs --out ./PGS/SPARKv3_thetatau_ADHD_finalscore --score ./final_data_forPGS/SPARK_alphaomega_ADHD_score.txt 2 4 6 center
+
+
+
+###SbayesRC generate scores
+./plink --bfile /mnt/b2/home4/arc/vw260/SPARK/SPARK_v3/Postimputation_genotyping/omega/alpha_omega_hg19_allchrs --out ./PGS/SPARKv3_alphaomega_autism_finalscore_Sbayesrc --score  ~/GCTA/SBayesRC/Output/asdtest_sbrc.txt 1 2 3 center
+./plink --bfile /mnt/b2/home4/arc/vw260/SPARK/SPARK_v3/Postimputation_genotyping/omega/alpha_omega_hg19_allchrs --out ./PGS/SPARKv3_alphaomega_ADHD_finalscore_Sbayesrc --score  ~/GCTA/SBayesRC/Output/sparkadhd_sbrc.txt 1 2 3 center
+./plink --bfile /mnt/b2/home4/arc/vw260/SPARK/SPARK_v3/Postimputation_genotyping/omega/alpha_omega_hg19_allchrs --out ./PGS/SPARKv3_alphaomega_dep_finalscore_Sbayesrc --score  ~/GCTA/SBayesRC/Output/sparkdep_sbrc.txt 1 2 3 center
+./plink --bfile /mnt/b2/home4/arc/vw260/SPARK/SPARK_v3/Postimputation_genotyping/omega/alpha_omega_hg19_allchrs --out ./PGS/SPARKv3_alphaomega_bipolar_finalscore_Sbayesrc --score  ~/GCTA/SBayesRC/Output/sparkbpd_sbrc.txt 1 2 3 center
+./plink --bfile /mnt/b2/home4/arc/vw260/SPARK/SPARK_v3/Postimputation_genotyping/omega/alpha_omega_hg19_allchrs --out ./PGS/SPARKv3_alphaomega_scz_finalscore_Sbayesrc --score  ~/GCTA/SBayesRC/Output/sparkscz_sbrc.txt 1 2 3 center
