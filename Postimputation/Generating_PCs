@@ -1,20 +1,25 @@
-###Generating PCs###
-#All analyses in R
-#We generate PCs using the quality controlled genotype data
-#For further information, follow: https://github.com/vwarrier/ABCD_geneticQC/tree/master/Preimputation
+###Running KING
+./king -b Genotype_QCd.bed --kinship --degree 2
 
+
+###Calculating principal components in R using related samples
+library("GENESIS")
+library("SNPRelate")
 library(GWASTools)
-library(GENESIS)
-library(SNPRelate)
 
 
-snpgdsBED2GDS(bed.fn = "QC1output.bed", 
-              bim.fn = "QC1output.bim", 
-              fam.fn = "QC1output.fam", 
-              out.gdsfn = "QC1output.gds")
+fam1 = fread("Genotype_QCd.fam")
+fam2 = fam1[,c("V2")]
+
+snpgdsBED2GDS(bed.fn = "Genotype_QCd.bed", 
+              bim.fn = "Genotype_QCd.bim", 
+              fam.fn = "Genotype_QCd.fam", 
+              out.gdsfn = "Genotype_QCd.gds")
 
 
-gds <- snpgdsOpen("QC1output.gds")
+gds <- snpgdsOpen("Genotype_QCd.gds")
+
+
 snpset <- snpgdsLDpruning(gds, method="corr", slide.max.bp=10e6, 
                           ld.threshold=sqrt(0.1), verbose=FALSE)
 pruned <- unlist(snpset, use.names=FALSE)
@@ -22,14 +27,18 @@ length(pruned)
 
 snpgdsClose(gds)
 
-KINGmat <- kingToMatrix(c("king.kin0","king.kin"))
+save(pruned, file = "pruned.RData")
+
+KINGmat <- kingToMatrix(c("king.kin0", "king.kin"), sample.include = fam1$V2, estimator = "Kinship")
 KINGmat[1:5,1:5]
 
-data1 <- GdsGenotypeReader(filename = "QC1output.gds")
-data2 <- GenotypeData(data1)
-data2
+save(KINGmat, file = "KINGmat.RData")
 
-mypcair <- pcair(data2, kinobj = KINGmat, divobj = KINGmat,
+data1 <- GdsGenotypeReader(filename = "Genotype_QCd.gds")
+data2 <- GenotypeData(data1)
+
+
+mypcair <- pcair(data2, kinobj = KINGmat, divobj = NULL,
                  snp.include = pruned)
 
 
@@ -41,4 +50,4 @@ save(PC, file = "PC.RData")
 PC2 = PC[,c(33, 1:32)]
 head(PC2)
 
-write.table(PC2, file = "SPARKthetatau_PCsforGWAS.txt", row.names = F, col.names = T, quote = F)
+write.table(PC2, file = "SPARKalphaomega_PCsforGWAS_v2.txt", row.names = F, col.names = T, quote = F)
