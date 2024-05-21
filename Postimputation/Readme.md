@@ -120,5 +120,13 @@ for (i in 1:22){
 for i in {1..22}; do ./plink --bfile ./Postimputation_genotyping/alpha/alpha_chr${i}_hg19 --make-bed --out ./Postimputation_genotyping/alpha/alpha_chr${i}_hg19_cleaned  --extract ./Postimputation_genotyping/alpha/alpha_snpstoextract_${i}_hg19.txt --allow-extra-chr; done
 ```
 
+## Step 4c
+```{bash}
+for i in {1..22}; do  ./plink --bfile alpha_chr1_hg19_cleaned --exclude alpha_hg19_allchrs-merge.missnp --make-bed --out alpha_chr1_hg19_cleaned_v2 --threads 15; done
+```
+
+```{bash}
+./plink  --bfile alpha_chr1_hg19_cleaned_v2 --make-bed --merge-list alpha_merged.txt --out alpha_hg19_allchrs --threads 10
+```
 
 
