@@ -1,0 +1,8 @@
+./gcta64 \
+--bfile /mnt/beegfs/home4/arc/vw260/SPARK/SPARK_v3/Postimputation_genotyping/omega/alpha_omega_hg19_allchrs \
+--keep /mnt/beegfs/home4/arc/vw260/SPARK/SPARK_v3/Postimputation_genotyping/omega/alphaomega_autismonly.txt \
+--autosome \
+--make-grm \
+--maf 0.01 \
+--thread-num 25 \
+--out /mnt/beegfs/home4/arc/vw260/SPARK/SPARK_v3/Postimputation_genotyping/omega/alpha_omega_hg19_autismonly_chr 
