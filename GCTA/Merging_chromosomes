@@ -1,0 +1,5 @@
+  ./plink --bfile omega_hg19_allchrs \
+  --bmerge /mnt/home4/arc/vw260/SPARK/SPARK_v3/Postimputation_genotyping/alpha/alpha_hg19_allchrs \
+  --make-bed \
+  --out alpha_omega_hg19_allchrs \
+  --threads 10
